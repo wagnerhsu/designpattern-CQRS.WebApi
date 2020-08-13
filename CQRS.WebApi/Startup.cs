@@ -1,4 +1,3 @@
-using CQRS.WebApi.Infrastructure;
 using CQRS.WebApi.Infrastructure.Context;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -28,7 +27,9 @@ namespace CQRS.WebApi
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName)));
+
             #region Swagger
+
             services.AddSwaggerGen(c =>
             {
                 c.IncludeXmlComments(string.Format(@"{0}\CQRS.WebApi.xml", System.AppDomain.CurrentDomain.BaseDirectory));
@@ -37,9 +38,10 @@ namespace CQRS.WebApi
                     Version = "v1",
                     Title = "CQRS.WebApi",
                 });
-
             });
-            #endregion
+
+            #endregion Swagger
+
             services.AddScoped<IApplicationContext>(provider => provider.GetService<ApplicationContext>());
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
@@ -59,7 +61,9 @@ namespace CQRS.WebApi
             app.UseRouting();
 
             app.UseAuthorization();
+
             #region Swagger
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
@@ -69,7 +73,9 @@ namespace CQRS.WebApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "CQRS.WebApi");
             });
-            #endregion
+
+            #endregion Swagger
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
